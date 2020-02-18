@@ -22,34 +22,18 @@
 # make
 
 if(APPLE)
-    add_executable(Raytracer MACOSX_BUNDLE
-        raytracer.c
-        )
-    add_executable(Raytracer2 MACOSX_BUNDLE
-        raytracer2.cc
-        fixed.h
-        fixed.cc
+    add_executable(Daniels MACOSX_BUNDLE
+        main.c
         )
 
-    target_link_libraries(Raytracer "-framework Carbon")
-    target_link_libraries(Raytracer2 "-framework Carbon")
+    target_link_libraries(Daniels "-framework Carbon")
 else()
-    add_application(Raytracer
-        raytracer.c
+    add_application(Daniels
+        main.c
         )
-    target_link_libraries(Raytracer "-lm")
-
-    add_application(Raytracer2
-        raytracer2.cc
-        fixed.h
-        fixed.cc
-        )
-
-    add_application(FixedBenchmark CONSOLE
-                    FILES fixedbenchmark.cc fixed.h fixed.cc)
+    target_link_libraries(Daniels "-lm")
     
     # save 200KB of code by removing unused stuff
-    set_target_properties(Raytracer PROPERTIES LINK_FLAGS "-Wl,-gc-sections")
-    set_target_properties(Raytracer2 PROPERTIES LINK_FLAGS "-Wl,-gc-sections")    
+    set_target_properties(Daniels PROPERTIES LINK_FLAGS "-Wl,-gc-sections")
 endif()
 

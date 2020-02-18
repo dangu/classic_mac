@@ -1,4 +1,4 @@
-# Makefile for standalone building of Raytracer example
+# Makefile for standalone building of Daniels example
 # Double-check RETRO68 variable below and run 'make'.
 
 # path to RETRO68
@@ -15,43 +15,19 @@ LDFLAGS=-Wl,-gc-sections -lm
 RINCLUDES=$(PREFIX)/RIncludes
 REZFLAGS=-I$(RINCLUDES)
 
-all: Raytracer.bin Raytracer2.bin FixedBenchmark.bin
+all: Daniels.bin
 .PHONY: all clean
 
 clean:
-	rm -f Raytracer.bin Raytracer.APPL Raytracer.dsk Raytracer.flt Raytracer.flt.gdb
-	rm -f Raytracer2.bin Raytracer2.APPL Raytracer2.dsk Raytracer2.flt Raytracer2.flt.gdb
+	rm -f Daniels.bin Daniels.APPL Daniels.dsk Daniels.flt Daniels.flt.gdb
 	rm -f FixedBenchmark.bin FixedBenchmark.APPL FixedBenchmark.dsk FixedBenchmark.flt FixedBenchmark.flt.gdb
-	rm -f fixed.o raytracer.o raytracer2.o fixedbenchmark.o
+	rm -f fixed.o main.o main2.o fixedbenchmark.o
 
-Raytracer.bin Raytracer.APPL Raytracer.dsk: Raytracer.flt
+Daniels.bin Daniels.APPL Daniels.dsk: Daniels.flt
 	$(REZ) $(REZFLAGS) \
-		-DFLT_FILE_NAME="\"Raytracer.flt\"" "$(RINCLUDES)/Retro68APPL.r" \
+		-DFLT_FILE_NAME="\"Daniels.flt\"" "$(RINCLUDES)/Retro68APPL.r" \
 		-t "APPL" -c "????" \
-		-o Raytracer.bin --cc Raytracer.APPL --cc Raytracer.dsk
+		-o Daniels.bin --cc Daniels.APPL --cc Daniels.dsk
 
-Raytracer.flt: raytracer.o
+Daniels.flt: main.o
 	$(CC) $^ -o $@ $(LDFLAGS)
-	
-Raytracer2.bin Raytracer2.APPL Raytracer2.dsk: Raytracer2.flt
-	$(REZ) $(REZFLAGS) \
-		-DFLT_FILE_NAME="\"Raytracer2.flt\"" "$(RINCLUDES)/Retro68APPL.r" \
-		-t "APPL" -c "????" \
-		-o Raytracer2.bin --cc Raytracer2.APPL --cc Raytracer2.dsk
-
-Raytracer2.flt: raytracer2.o fixed.o
-	$(CXX) $^ -o $@ $(LDFLAGS)
-	
-FixedBenchmark.bin FixedBenchmark.APPL FixedBenchmark.dsk: FixedBenchmark.flt
-	$(REZ) $(REZFLAGS) \
-		-DFLT_FILE_NAME="\"FixedBenchmark.flt\"" "$(RINCLUDES)/Retro68APPL.r" \
-		-t "APPL" -c "????" \
-		-o FixedBenchmark.bin --cc FixedBenchmark.APPL --cc FixedBenchmark.dsk
-
-FixedBenchmark.flt: fixedbenchmark.o fixed.o
-	$(CXX) $^ -o $@ -lRetroConsole $(LDFLAGS)
-
-fixed.o: fixed.h
-raytracer2.o: fixed.h
-fixedbenchmark.o: fixed.h
-
