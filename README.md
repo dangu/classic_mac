@@ -1,4 +1,4 @@
-# Classig mac
+# Classic Mac
 Classic Mac (Motorola 68000) programming
 
 This site has some useful info about programming with Retro68:
