@@ -13,3 +13,6 @@ Coding for vintage macs
 
 http://code68k.extropicstudios.com/
 
+Inside Macintosh
+
+http://mirror.informatimago.com/next/developer.apple.com/documentation/mac/Toolbox/Toolbox-124.html
