@@ -30,6 +30,7 @@ if(APPLE)
 else()
     add_application(Daniels
         main.c
+        daniels.r
         )
     target_link_libraries(Daniels "-lm")
     
