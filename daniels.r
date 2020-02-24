@@ -62,3 +62,20 @@ resource 'MENU' (130) {
 resource 'MBAR' (128) {
     { 128, 129, 130 };
 };
+
+data 'TEXT' (128) {
+    "About Daniels program\r\r"
+    "This is a late nostalgic trip back to the days when the only programming possible "
+    "to do was on a Mac SE with black and white screen with 512x342 pixels and 22 kHz sound "
+    "sampling rate. This is the first time I really succeed in using resources.\r"
+    "Many thanks to the fine people creating the original Mac and as well as this "
+    "Retro68 that makes this possible."
+};
+
+resource 'WIND' (128) {
+    {0, 0, 220, 320}, altDBoxProc;
+    invisible;
+    noGoAway;
+    0, "";
+    noAutoCenter;
+};
