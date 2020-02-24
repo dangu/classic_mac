@@ -22,7 +22,9 @@ enum
 };
 enum
 {
-    kItemAbout = 1,
+    kItemAbout 	= 1,
+
+    kItemQuit 	= 7,
 };
 
 QDGlobals qd;
@@ -97,22 +99,31 @@ void ShowAboutBox()
 
 void DoMenuCommand(long menuCommand)
 {
-    Str255 str;
-    WindowRef w;
-    short menuID = menuCommand >> 16;
-    short menuItem = menuCommand & 0xFFFF;
-    if(menuID == kMenuApple)
-    {
-        if(menuItem == kItemAbout)
-            ShowAboutBox();
-        else
-        {
-            GetMenuItemText(GetMenu(128), menuItem, str);
-            OpenDeskAcc(str);
-        }
-    }
+	Str255 str;
+	WindowRef w;
+	short menuID = menuCommand >> 16;
+	short menuItem = menuCommand & 0xFFFF;
+	if(menuID == kMenuApple)
+	{
+		if(menuItem == kItemAbout)
+			ShowAboutBox();
+		else
+		{
+			GetMenuItemText(GetMenu(128), menuItem, str);
+			OpenDeskAcc(str);
+		}
+	}
+	else if(menuID == kMenuFile)
+	{
+		switch(menuItem)
+		{
+		case kItemQuit:
+			ExitToShell();
+			break;
+		}
+	}
 
-    HiliteMenu(0);
+	HiliteMenu(0);
 }
 
 void MainLoop()
@@ -122,35 +133,38 @@ void MainLoop()
 
 	while (true)
 	{
-		switch(GetNextEvent(everyEvent, &event))
+		if(GetNextEvent(everyEvent, &event))
 		{
-		case keyDown:
-		{
-			Terminate();
-		}
-		break;
-
-		case mouseDown:
-			switch(FindWindow(event.where, &win))
+			switch(event.what)
 			{
-			case inGoAway:
-				if(TrackGoAway(win, event.where))
-					DisposeWindow(win);
-				break;
-			case inDrag:
-				DragWindow(win, event.where, &qd.screenBits.bounds);
-				break;
-			case inMenuBar:
-				DoMenuCommand( MenuSelect(event.where) );
-				break;
-			case inContent:
-				SelectWindow(win);
-				break;
-			case inSysWindow:
-				SystemClick(&event, win);
-				break;
+			case keyDown:
+			{
+				Terminate();
 			}
 			break;
+
+			case mouseDown:
+				switch(FindWindow(event.where, &win))
+				{
+				case inGoAway:
+					if(TrackGoAway(win, event.where))
+						DisposeWindow(win);
+					break;
+				case inDrag:
+					DragWindow(win, event.where, &qd.screenBits.bounds);
+					break;
+				case inMenuBar:
+					DoMenuCommand( MenuSelect(event.where) );
+					break;
+				case inContent:
+					SelectWindow(win);
+					break;
+				case inSysWindow:
+					SystemClick(&event, win);
+					break;
+				}
+				break;
+			}
 		}
 	}
 }
