@@ -16,3 +16,6 @@ http://code68k.extropicstudios.com/
 Inside Macintosh
 
 http://mirror.informatimago.com/next/developer.apple.com/documentation/mac/Toolbox/Toolbox-124.html
+
+Mac Almanac II - Lots of global variables in the Mac ROM
+http://www.mac.linux-m68k.org/devel/macalmanac.php
