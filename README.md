@@ -19,3 +19,8 @@ http://mirror.informatimago.com/next/developer.apple.com/documentation/mac/Toolb
 
 Mac Almanac II - Lots of global variables in the Mac ROM
 http://www.mac.linux-m68k.org/devel/macalmanac.php
+
+
+# Copying rsrc-files
+According to this thread: https://github.com/autc04/Retro68/issues/98
+it should be possible to save a rsrc file as MacBinary and include it in the application, by using the --copy command
