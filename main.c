@@ -126,10 +126,38 @@ void DoMenuCommand(long menuCommand)
 	HiliteMenu(0);
 }
 
+void TestSound()
+{
+	Handle myHandle;
+	Ptr myPtr;
+	SWSynthPtr mySWPtr;
+
+	myHandle = NewHandle(120);
+	HLock(myHandle);
+	myPtr = *myHandle;
+	mySWPtr = (SWSynthPtr)myPtr;
+	mySWPtr->mode = swMode;
+	mySWPtr->triplets[0].tcount = 1000;
+	mySWPtr->triplets[0].amplitude = 100;
+	mySWPtr->triplets[0].tduration = 100;
+	mySWPtr->triplets[1].tcount = 9000;
+	mySWPtr->triplets[1].amplitude = 100;
+	mySWPtr->triplets[1].tduration = 100;
+	mySWPtr->triplets[2].tcount = 8000;
+	mySWPtr->triplets[2].amplitude = 100;
+	mySWPtr->triplets[2].tduration = 100;
+
+	StopSound();
+	StartSound(myPtr, (LONGINT)3, (ProcPtr)-1);
+
+}
+
 void MainLoop()
 {
 	EventRecord 	event;
 	WindowRef 	win;
+
+	TestSound();
 
 	while (true)
 	{

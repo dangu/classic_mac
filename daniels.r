@@ -25,7 +25,7 @@ resource 'MENU' (128) {
     allEnabled, enabled;
     apple;
     {
-        "About WDEF Shell...", noIcon, noKey, noMark, plain;
+        "About Daniels program...", noIcon, noKey, noMark, plain;
         "-", noIcon, noKey, noMark, plain;
     }
 };
