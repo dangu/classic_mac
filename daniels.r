@@ -79,3 +79,41 @@ resource 'WIND' (128) {
     0, "";
     noAutoCenter;
 };
+
+#include "Dialogs.r"
+
+resource 'DLOG' (128) {
+	{ 50, 100, 240, 420 },
+	dBoxProc,
+	visible,
+	noGoAway,
+	0,
+	128,
+	"",
+	centerMainScreen
+};
+
+resource 'DITL' (128) {
+	{
+		{ 190-10-20, 320-10-80, 190-10, 320-10 },
+		Button { enabled, "Quit" };
+
+		{ 190-10-20-5, 320-10-80-5, 190-10+5, 320-10+5 },
+		UserItem { enabled };
+
+		{ 10, 10, 30, 310 },
+		StaticText { enabled, "Error ^1 and ^2" };
+
+		{ 40, 10, 56, 310 },
+		EditText { enabled, "Edit Text Item" };
+
+		{ 70, 10, 86, 310 },
+		CheckBox { enabled, "Check Box" };
+
+		{ 90, 10, 106, 310 },
+		RadioButton { enabled, "Radio 1" };
+
+		{ 110, 10, 126, 310 },
+		RadioButton { enabled, "Radio 2" };
+	}
+};
