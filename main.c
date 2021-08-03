@@ -29,6 +29,8 @@ enum
 
 QDGlobals qd;
 
+bool showError;
+
 void main()
 {
   Initialize();
@@ -128,26 +130,75 @@ void DoMenuCommand(long menuCommand)
 
 void ShowError(int err)
 {
+    Str255 errStr;
+    NumToString( err, errStr );
+	ParamText(errStr,errStr,errStr,errStr);
+
+
 	DialogPtr dlg = GetNewDialog(128,0,(WindowPtr)-1);
 	//Alert(128, NULL);
 
+	showError = true;
+
 
 }
-
 void TestSound()
+{
+	OSErr myErr;
+	long amp, pitch;
+	SndChannelPtr myChannel;
+	SndCommand myCmd;
+
+	amp = 0xFF000000;
+	pitch = 60;
+	myChannel = 0L;
+	myCmd.cmd = noteCmd;
+	myCmd.param1 = 1000;
+	myCmd.param2 = amp + pitch;
+
+	myChannel = 0L;
+
+	myErr = SndNewChannel(&myChannel, noteSynth, 0, 0L);
+	if (myErr != noErr)
+		ShowError(myErr);
+	for(int i=0;i<10;i++)
+	{
+		pitch = 60+i;
+		myCmd.param2 = amp + pitch;
+//		myErr = SndDoImmediate(myChannel, &myCmd);
+		myErr = SndDoCommand(myChannel, &myCmd, false);
+		if (myErr != noErr)
+			ShowError(myErr);
+	}
+
+//		Debugger();
+//	myErr = SndDisposeChannel(myChannel, true);
+//	if (myErr != noErr)
+//		ShowError(myErr);
+//		Debugger();
+}
+
+void TestSound_Res()
 {
 	Handle mySndHdl;
 	Ptr myPtr;
 	SndChannelPtr mySndChnPtr;
 
-	ParamText("\p1","\p2","\p3","\p4");
-	ShowError(0);
+	OSErr retCode;
+
+
 
 
 	mySndChnPtr = 0;
-	mySndHdl = GetNamedResource('snd ', "Jah");
+	mySndHdl = GetNamedResource('snd ', "\pJah");
+    if (ResError() != noErr || mySndHdl == nil)
+           Debugger();
+	//ShowError((int)mySndHdl);
 	//SndNewChannel(&mySndChnPtr, noteSynth, 0, 0);
-	SndPlay(0, mySndHdl, 0);
+	retCode = SndPlay(0, mySndHdl, 0);
+	ShowError(retCode);
+	ReleaseResource(mySndHdl);
+	Debugger();
 
 }
 
@@ -159,9 +210,13 @@ void MainLoop()
 
 	TestSound();
 
+	item = 0;
 	do
 	{
-        ModalDialog(NULL, &item);
+		if(showError)
+		{
+			ModalDialog(NULL, &item);
+		}
 
 
 		if(GetNextEvent(everyEvent, &event))
