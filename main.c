@@ -148,6 +148,39 @@ void ShowError(int err)
 
 }
 
+/** @brief Test capabilities
+ * From http://mirror.informatimago.com/next/developer.apple.com/documentation/mac/Sound/Sound-53.html#MARKER-9-235
+ *
+ */
+static bool MyCanPlayMultiChannels()
+{
+	long myResponse;
+	bool myResult=false;
+	OSErr myErr;
+	NumVersion myVersion;
+
+	myVersion = SndSoundManagerVersion();
+	myErr = Gestalt(gestaltSoundAttr, &myResponse);
+//	if(myVersion.majorRevs >=3)
+//	{
+//		if((myErr == noErr)
+//				&& (BitTst(myResponse, gestaltMultiChannels)))
+//		{
+//			myResult = true;
+//		}
+//	}
+//	else
+//	{
+		myErr = Gestalt(gestaltHardwareAttr, &myResponse);
+		if((myErr == noErr)
+			&& (BitTst((Ptr)&myResponse, (long)gestaltHasASC)))
+		{
+			myResult = true;
+		}
+//	}
+	return myResult;
+}
+
 /**@brief Test sound
  *
  * Info in Inside Macintosh V, p. 473 "Sound Manager"
@@ -161,13 +194,23 @@ void TestSound(SndChannelPtr *ppChannel)
 	long amp, pitch;
 
 	SndCommand myCmd;
+	SndCommand myAmpCmd;
+	SndCommand myTimbreCmd;
 
 	amp = 0xFF000000;
 	pitch = 60;
 
 	myCmd.cmd = noteCmd;
-	myCmd.param1 = 1000;
+	myCmd.param1 = 200;
 	myCmd.param2 = amp + pitch;
+
+	myAmpCmd.cmd = ampCmd;
+	myAmpCmd.param1 = 0;
+	myAmpCmd.param2 = 0;
+
+	myTimbreCmd.cmd = timbreCmd;
+	myTimbreCmd.param1 = 0;
+	myTimbreCmd.param2 =0;
 
 	*ppChannel = 0L;
 
@@ -176,15 +219,30 @@ void TestSound(SndChannelPtr *ppChannel)
 		ShowError(myErr);
 	else
 	{
-//		for(int i=0;i<10;i++)
-//		{
-//			pitch = 60+i;
-//			myCmd.param2 = amp + pitch;
-//			//		myErr = SndDoImmediate(myChannel, &myCmd);
+		for(int i=0;i<30;i++)
+		{
+//			myAmpCmd.param1 = 255-(255/30*(30-i));
+//			myErr = SndDoCommand(*ppChannel, &myAmpCmd, false);
+//			if (myErr != noErr)
+//				ShowError(myErr);
+
+			myTimbreCmd.param1 = 255-(255/30*(30-i));
+			myTimbreCmd.param1 = 0;
+			myErr = SndDoCommand(*ppChannel, &myTimbreCmd, false);
+			if (myErr != noErr)
+				ShowError(myErr);
+
+			pitch = 60+i;
+			//amp = 0xFF000000 & (0xFF - i*8)<<24;
+			amp = 0x00000000 & (0xFF - i*8)<<24;
+
+			myCmd.param2 = amp + pitch;
+			//		myErr = SndDoImmediate(myChannel, &myCmd);
 			myErr = SndDoCommand(*ppChannel, &myCmd, false);
 			if (myErr != noErr)
 				ShowError(myErr);
-//		}
+
+		}
 	}
 
 
