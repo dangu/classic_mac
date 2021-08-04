@@ -142,23 +142,23 @@ void ShowError(int err)
 
 
 }
-void TestSound()
+void TestSound(SndChannelPtr *ppChannel)
 {
 	OSErr myErr;
 	long amp, pitch;
-	SndChannelPtr myChannel;
+
 	SndCommand myCmd;
 
 	amp = 0xFF000000;
 	pitch = 60;
-	myChannel = 0L;
+
 	myCmd.cmd = noteCmd;
 	myCmd.param1 = 1000;
 	myCmd.param2 = amp + pitch;
 
-	myChannel = 0L;
+	*ppChannel = 0L;
 
-	myErr = SndNewChannel(&myChannel, noteSynth, 0, 0L);
+	myErr = SndNewChannel(ppChannel, noteSynth, 0, 0L);
 	if (myErr != noErr)
 		ShowError(myErr);
 	for(int i=0;i<10;i++)
@@ -166,7 +166,7 @@ void TestSound()
 		pitch = 60+i;
 		myCmd.param2 = amp + pitch;
 //		myErr = SndDoImmediate(myChannel, &myCmd);
-		myErr = SndDoCommand(myChannel, &myCmd, false);
+		myErr = SndDoCommand(*ppChannel, &myCmd, false);
 		if (myErr != noErr)
 			ShowError(myErr);
 	}
@@ -207,8 +207,9 @@ void MainLoop()
 	EventRecord 	event;
 	WindowRef 	win;
     short item;
+    SndChannelPtr pChannel;
 
-	TestSound();
+	TestSound(&pChannel);
 
 	item = 0;
 	do
