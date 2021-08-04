@@ -99,10 +99,12 @@ void ShowAboutBox()
     DisposeWindow(w);
 }
 
-void DoMenuCommand(long menuCommand)
+bool DoMenuCommand(long menuCommand)
 {
 	Str255 str;
 	WindowRef w;
+	bool quitFlag=false;
+
 	short menuID = menuCommand >> 16;
 	short menuItem = menuCommand & 0xFFFF;
 	if(menuID == kMenuApple)
@@ -120,12 +122,15 @@ void DoMenuCommand(long menuCommand)
 		switch(menuItem)
 		{
 		case kItemQuit:
-			ExitToShell();
+			quitFlag = true;
+//			ExitToShell();
 			break;
 		}
 	}
 
 	HiliteMenu(0);
+
+	return quitFlag;
 }
 
 void ShowError(int err)
@@ -142,6 +147,14 @@ void ShowError(int err)
 
 
 }
+
+/**@brief Test sound
+ *
+ * Info in Inside Macintosh V, p. 473 "Sound Manager"
+ *
+ * More info:
+ * http://mirror.informatimago.com/next/developer.apple.com/documentation/mac/Sound/Sound-51.html
+ */
 void TestSound(SndChannelPtr *ppChannel)
 {
 	OSErr myErr;
@@ -161,21 +174,20 @@ void TestSound(SndChannelPtr *ppChannel)
 	myErr = SndNewChannel(ppChannel, noteSynth, 0, 0L);
 	if (myErr != noErr)
 		ShowError(myErr);
-	for(int i=0;i<10;i++)
+	else
 	{
-		pitch = 60+i;
-		myCmd.param2 = amp + pitch;
-//		myErr = SndDoImmediate(myChannel, &myCmd);
-		myErr = SndDoCommand(*ppChannel, &myCmd, false);
-		if (myErr != noErr)
-			ShowError(myErr);
+//		for(int i=0;i<10;i++)
+//		{
+//			pitch = 60+i;
+//			myCmd.param2 = amp + pitch;
+//			//		myErr = SndDoImmediate(myChannel, &myCmd);
+			myErr = SndDoCommand(*ppChannel, &myCmd, false);
+			if (myErr != noErr)
+				ShowError(myErr);
+//		}
 	}
 
-//		Debugger();
-//	myErr = SndDisposeChannel(myChannel, true);
-//	if (myErr != noErr)
-//		ShowError(myErr);
-//		Debugger();
+
 }
 
 void TestSound_Res()
@@ -206,6 +218,9 @@ void MainLoop()
 {
 	EventRecord 	event;
 	WindowRef 	win;
+	OSErr 		myErr;
+	bool quitFlag = false;
+
     short item;
     SndChannelPtr pChannel;
 
@@ -226,7 +241,7 @@ void MainLoop()
 			{
 			case keyDown:
 			{
-				Terminate();
+				quitFlag = true;
 			}
 			break;
 
@@ -241,7 +256,7 @@ void MainLoop()
 					DragWindow(win, event.where, &qd.screenBits.bounds);
 					break;
 				case inMenuBar:
-					DoMenuCommand( MenuSelect(event.where) );
+					quitFlag |= DoMenuCommand( MenuSelect(event.where) );
 					break;
 				case inContent:
 					SelectWindow(win);
@@ -253,7 +268,17 @@ void MainLoop()
 				break;
 			}
 		}
-	} while(item != 1);
+	} while((item != 1)
+			&& (!quitFlag));
+
+	myErr = SndDisposeChannel(pChannel, true);
+	if (myErr != noErr)
+		ShowError(myErr);
+
+
+	//		Debugger();
+
+	//		Debugger();
 }
 
 void Terminate() {
