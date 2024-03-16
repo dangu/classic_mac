@@ -20,6 +20,12 @@ http://mirror.informatimago.com/next/developer.apple.com/documentation/mac/Toolb
 Mac Almanac II - Lots of global variables in the Mac ROM
 http://www.mac.linux-m68k.org/devel/macalmanac.php
 
+Books
+https://commodore.bombjack.org/mac/mac-books.htm
+
+Mac programming library
+https://vintageapple.org/macprogramming/
+
 
 # Copying rsrc-files
 According to this thread: https://github.com/autc04/Retro68/issues/98
